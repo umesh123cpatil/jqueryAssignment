@@ -1,56 +1,52 @@
+let url = "https://davids-restaurant.herokuapp.com/menu_items.json"
 
-var number=document.querySelectorAll(".drum").length;
-for(var i=0;i<number;i++)
-{
-document.querySelectorAll(".drum")[i].addEventListener("click",function(){
-  var buttonInnerHTML=this.innerHTML;
-  makeSound(buttonInnerHTML)
+let menu_items = null;
+
+$("document").ready(function(){
+    $.get(url,function(data, status){
+        if (status == "success"){
+            menu_items = data.menu_items;
+            for (const key in data.menu_items) {
+                let opt = document.createElement("option");
+                opt.textContent = data.menu_items[key].name;
+                opt.value = key; 
+                document.querySelector('#restaurant').appendChild(opt);
+            }
+        }
+       
+    });
+    
+document.querySelector("#restaurant").addEventListener("change",showdetails);
+
+function showdetails(e){
+    let index = e.target.value;
+    
+    if(menu_items != null){
+        let x = menu_items[index];
+        let pricesmall;
+        
+        if(x.price_small != null){
+            pricesmall = x.price_small;
+            
+        }
+        else{
+            pricesmall = "Not available";
+        }
+        let descrp = x.description;
+        if(descrp == ""){
+            descrp = "Description not available";
+        }
+        document.querySelector("#menuname").textContent = x.name;
+        document.querySelector("#id").textContent = x.id;
+        document.querySelector("#sname").textContent = x.short_name;
+        document.querySelector("#descp").textContent = descrp;
+        document.querySelector("#psmall").textContent = pricesmall;
+        document.querySelector("#plarge").textContent = x.price_large;
+        document.getElementById("tabl").style.display = "block";
+    }
+
+    
+}
+
+
 });
-}
-
-document.addEventListener("keypress",function(event){
-  makeSound(event.key);
-})
-function makeSound(key)
-{
-switch(key){
-  case "w":
-  var crash=new Audio("sounds/crash.mp3");
-  crash.play();
-  break;
-
-  case "a":
-  var kick=new Audio("sounds/kick-bass.mp3");
-  kick.play();
-  break;
-
-  case "s":
-  var snare=new Audio("sounds/snare.mp3");
-  snare.play();
-  break;
-
-  case "d":
-  var tom1=new Audio("sounds/tom-1.mp3");
-  tom1.play();
-  break;
-
-  case "j":
-  var tom2=new Audio("sounds/tom-2.mp3");
-  tom2.play();
-  break;
-
-  case "k":
-  var tom3=new Audio("sounds/tom-3.mp3");
-  tom3.play();
-  break;
-
-  case "l":
-  var tom4=new Audio("sounds/tom-4.mp3");
-  tom4.play();
-  break;
-
-  default:
-  console.log(buttonInnerHTML);
-
-}
-}
